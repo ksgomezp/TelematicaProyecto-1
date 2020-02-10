@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>API-REST</title>
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link href="/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+
+        <h1 class="title">Telematica API-REST</h1>
+        <div id="homepage">
+            <h1>Encuentra un arduino</h1>
+            <div id="arduinos"></div>
+        </div>
+
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="https://unpkg.com/react@15/dist/react.js"></script>
+        <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+
+        <!-- Create React Component -->
+        <script type="text/babel">
+        var Arduinos = React.createClass({
+            getInitialState: function(){
+                return({
+                    arduinos: []
+                });
+            },
+            render: function(){
+                var arduinos = this.state.arduinos;
+                arduinos = arduinos.map(function(arduino, index){
+                    return(
+                        <li key={index}>
+
+                            <span className="temperatura">{arduino.obj.temperatura}</span>
+                            <span className="humedad">{arduino.obj.humedad}</span>
+                            <span className="dist">{Math.floor(arduino.dis / 1000)} km</span>
+                        </li>
+                    );
+                });
+                return(
+                    <div id="arduino-container">
+                        <form id="search" onSubmit={this.handleSubmit}>
+                            <label>Enter your Latitude:</label>
+                            <input type="text" ref="lat" placeholder="latitude" required />
+                            <label>Enter your Longitude:</label>
+                            <input type="text" ref="lng" placeholder="longitude" required />
+                            <input type="submit" value="Find arduinos" />
+                        </form>
+                        <ul>{arduinos}</ul>
+                    </div>
+                );
+            },
+            handleSubmit: function(e){
+                e.preventDefault();
+                var lng = this.refs.lng.value;
+                var lat = this.refs.lat.value;
+
+                fetch('/api/arduinos?lng=' + lng + '&lat=' + lat).then(function(data){
+                    return data.json();
+                }).then( json => {
+                    this.setState({
+                        arduinos: json
+                    });
+                    console.log(json);
+                });
+            }
+        });
+        ReactDOM.render(<Arduinos />, document.getElementById('arduinos'));
+        </script>
+
+
+    </body>
+</html>
