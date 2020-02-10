@@ -6,12 +6,13 @@ const Arduino = require('../models/arduino');
 
 // get a list of ninjas from the db
 router.get('/arduinos', function(req, res, next){
-  Arduino.geoNear(
-        {type: 'Point', coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)]},
-        {maxDistance: 100000, spherical: true}
-    ).then(function(arduinos){
-        res.send(arduinos);
-    }).catch(next);
+  Arduino.aggregate().near({
+          near: { type: "Point", coordinates: [parseFloat(req.query.lng), parseFloat(req.query.lat)] },
+          maxDistance: 300000, spherical: true, distanceField: "distance"
+      }
+      ).then(function (registries) {
+          res.send(registries);
+      });
 });
 
 // add a new ninja to the db

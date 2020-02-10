@@ -15,12 +15,13 @@
         </div>
 
         <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src="https://unpkg.com/react@15/dist/react.js"></script>
-        <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+        <script crossorigin src="https://unpkg.com/react@15.6.2/dist/react.js"></script>
+        <script crossorigin src="https://unpkg.com/react-dom@15.6.2/dist/react-dom.min.js"></script>
 
         <!-- Create React Component -->
         <script type="text/babel">
         var Arduinos = React.createClass({
+
             getInitialState: function(){
                 return({
                     arduinos: []
@@ -28,13 +29,14 @@
             },
             render: function(){
                 var arduinos = this.state.arduinos;
+                console.log(arduinos);
                 arduinos = arduinos.map(function(arduino, index){
                     return(
                         <li key={index}>
 
-                            <span className="temperatura">{arduino.obj.temperatura}</span>
-                            <span className="humedad">{arduino.obj.humedad}</span>
-                            <span className="dist">{Math.floor(arduino.dis / 1000)} km</span>
+                            <span className="temperatura">{arduino.temperatura}</span>
+                            <span className="humedad">{arduino.humedad}</span>
+                            <span className="distance">{Math.floor(arduino.distance / 1000)} km</span>
                         </li>
                     );
                 });
@@ -56,7 +58,7 @@
                 var lng = this.refs.lng.value;
                 var lat = this.refs.lat.value;
 
-                fetch('/api/arduinos?lng=' + lng + '&lat=' + lat).then(function(data){
+                fetch('/api/arduinos/?lng=' + lng + '&lat=' + lat).then(function(data){
                     return data.json();
                 }).then( json => {
                     this.setState({
